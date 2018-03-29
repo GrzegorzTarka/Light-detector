@@ -12,31 +12,31 @@
 #include "LCD/lcd44780.h"
 #include <stdlib.h>
 
-uint16_t adc_measurement(uint8_t adc_canal); // adc_canal = wartoúc od 0 do 7, odpowiada pinom portu A
+int16_t adc_measurement(uint8_t adc_canal); // adc_canal = warto≈õc od 0 do 7, odpowiada pinom portu A
 
 int main (void)
 {
-	ADMUX 	|= (1<<REFS0)|(1<<REFS1); // WewnÍtrzne napiÍcie odniesienia Vref=2,56.
-	ADCSRA	|= (1<<ADEN);			  // W≥πczenie ADC.
+	ADMUX 	|= (1<<REFS0)|(1<<REFS1); // Wewnƒôtrzne napiƒôcie odniesienia Vref=2,56.
+	ADCSRA	|= (1<<ADEN);		  // W≈ÇƒÖczenie ADC.
 	ADCSRA	|= (1<<ADPS1)|(1<<ADPS2); // Ustawienie preskalera dla ADC na 64 (8MHz/64=125kHz). Wg. noty dla rozdzielczosci 10 bitowej ADC wymaga taktowania 50-200 kHz.
 
-	USART_Init( __UBRR );			// inicjalizacja UART
-	lcd_init();						// inicjalizacja LCD
-	sei();							// globalne zezwolenie na przerwania, na potrzeby biblioteki UART
+	USART_Init( __UBRR );		  // Inicjalizacja UART.
+	lcd_init();			  // Inicjalizacja LCD.
+	sei();				  // Globalne zezwolenie na przerwania, na potrzeby biblioteki UART.
 
 
 	while(1)
 		{
 
-		int16_t left_fotoresistor_value = adc_measurement(6);												// Pomiar napiÍcia na kanale ADC6 - lewy fotorezystor
-		int16_t right_fotoresistor_value = adc_measurement(7);												// Pomiar napiÍcia na kanale ADC7 - prawy fotorezystor
-		int16_t right_fotoresistor_value_correct =right_fotoresistor_value-(right_fotoresistor_value*0.16); // Korekta odczytu bardziej czu≥ego fotorezystora
-		int16_t difference=left_fotoresistor_value-right_fotoresistor_value_correct; 						// RÛønica napiÍc.
+		int16_t left_fotoresistor_value = adc_measurement(6);	// Pomiar napiƒôcia na kanale ADC6 - lewy fotorezystor
+		int16_t right_fotoresistor_value = adc_measurement(7);	// Pomiar napiƒôcia na kanale ADC7 - prawy fotorezystor
+		int16_t right_fotoresistor_value_correct =right_fotoresistor_value-(right_fotoresistor_value*0.16); // Korekta odczytu bardziej czu≈Çego fotorezystora
+		int16_t difference=left_fotoresistor_value-right_fotoresistor_value_correct; 			    // R√≥≈ºnica napiƒôc.
 
-		float a;					// Zmienna pomocnicza do wyznaczenia wartosci intenisty
-		int8_t intensity; 			// NatÍøenie úwiat≥a, im ürÛd≥o úwiat≥a znajduje siÍ bliøej fotorezystora tym wiÍkszy odczyt ADC
-		int8_t max_intenisty = 7; 	// Maksymalne zmierzone natÍøenie úwiat≥a
-		int8_t limit_value = 100;	// Wyznacznie granic LEFT/FRONT/RIGHT
+		float a;			// Zmienna pomocnicza do wyznaczenia wartosci intenisty.
+		int8_t intensity; 		// Natƒô≈ºenie ≈õwiat≈Ça, im ≈∫r√≥d≈Ço ≈õwiat≈Ça znajduje siƒô bli≈ºej fotorezystora tym wiƒôkszy odczyt ADC.
+		int8_t max_intenisty = 7; 	// Maksymalne zmierzone natƒô≈ºenie ≈õwiat≈Ça.
+		int8_t limit_value = 100;	// Wyznacznie granic LEFT/FRONT/RIGHT.
 
 
 		// Pomocniczy fragment kodu, dla odczytu zmian wartosci ADC
@@ -45,21 +45,21 @@ int main (void)
 		//uart_putc("/");
 		//uart_putint(right_fotoresistor_value,10);
 
-		if(abs(difference)<=limit_value) // èrÛd≥o úwiat≥a na wprost.
+		if(abs(difference)<=limit_value) // ≈πr√≥d≈Ço ≈õwiat≈Ça na wprost.
 			{
 			lcd_cls();
 			lcd_locate(1,5);
 			lcd_str("FRONT");
-			a=((left_fotoresistor_value>right_fotoresistor_value_correct)? left_fotoresistor_value:right_fotoresistor_value_correct)/100; // Wyznaczanie ADC max. Dla przedzia≥u FRONT lewy lub prawy fotorezystor moøe miec najwieksza wartosc.
+			a=((left_fotoresistor_value>right_fotoresistor_value_correct)? left_fotoresistor_value:right_fotoresistor_value_correct)/100; // Wyznaczanie ADC max. Dla przedzia≈Çu FRONT lewy lub prawy fotorezystor mo≈ºe miec najwieksza wartosc.
 			}
-		else if(difference<-limit_value) // èrÛd≥o úwiat≥a na lewo.
+		else if(difference<-limit_value) // ≈πr√≥d≈Ço ≈õwiat≈Ça na lewo.
 				{
 				lcd_cls();
 				lcd_locate(1,11);
 				lcd_str("RIGHT");
 				a=right_fotoresistor_value_correct/100;
 				}
-		else if(abs(difference)>limit_value)// èrÛd≥o úwiat≥a na prawo.
+		else if(abs(difference)>limit_value)// ≈πr√≥d≈Ço ≈õwiat≈Ça na prawo.
 				{
 				lcd_cls();
 				lcd_locate(1,0);
@@ -67,11 +67,11 @@ int main (void)
 				a=left_fotoresistor_value/100;
 				}
 
-		intensity=abs((int8_t)a);							// Jawne rzutowanie typÛw, przypisanie czÍúci ca≥kowitej
-		int8_t distance_marker =max_intenisty-intensity;	// Okreúlenie znacznika odleg≥oúci
+		intensity=abs((int8_t)a);				// Jawne rzutowanie typ√≥w, przypisanie czƒô≈õci ca≈Çkowitej
+		int8_t distance_marker =max_intenisty-intensity;	// Okre≈õlenie znacznika odleg≈Ço≈õci
 
 		uint8_t i=0;
-		for (i=0; i<distance_marker+1;i++)					// Graficzne przedstawienie odleg≥oúci, im wiÍcej ">" tym dalej znajduje siÍ ürÛ≥o úwiat≥a
+		for (i=0; i<distance_marker+1;i++)			// Graficzne przedstawienie odleg≈Ço≈õci, im wiƒôcej ">" tym dalej znajduje siƒô ≈∫r√≥≈Ço ≈õwiat≈Ça
 			{
 				lcd_locate(0,i);
 				lcd_str(">");
@@ -81,13 +81,13 @@ int main (void)
 		}
 }
 
-uint16_t adc_measurement(uint8_t adc_canal)
+int16_t adc_measurement(uint8_t adc_canal)
 {
-	_delay_us(250);							// OpÛünienie na potrzeby zmiany kana≥u ADC
-	ADMUX= (ADMUX&0xF8)|adc_canal;			// ADMUX&0xF8 - Maska bitowa zabezpieczajπca 5 starszych bitÛw przed modyfikacjπ i zerujπca 3 m≥odsze dziÍki czemu mozliwe jest ustawienie nowego kana≥u(|adc_canal)
-	ADCSRA|=(1<<ADSC);						// Ustawienie bitu rozpoczynajπcego konwersjÍ.
-	while (ADCSRA&(1<<ADSC)){};				// W trakcie trwania pomiaru ADSC=1. Po pomiarze ADSC zeruje siÍ automatycznie
-											// Oczekiwanie  na zakoÒczenie pomiaru.
-	return ADCW;							// Funkcja zwraca wartoúc rejestrÛw ADCH i ADCL
+	_delay_us(250);					// Op√≥≈∫nienie na potrzeby zmiany kana≈Çu ADC
+	ADMUX= (ADMUX&0xF8)|adc_canal;			// ADMUX&0xF8 - Maska bitowa zabezpieczajƒÖca 5 starszych bit√≥w przed modyfikacjƒÖ i zerujƒÖca 3 m≈Çodsze dziƒôki czemu mozliwe jest ustawienie nowego kana≈Çu(|adc_canal)
+	ADCSRA|=(1<<ADSC);				// Ustawienie bitu rozpoczynajƒÖcego konwersjƒô.
+	while (ADCSRA&(1<<ADSC)){};			// W trakcie trwania pomiaru ADSC=1. Po pomiarze ADSC zeruje siƒô automatycznie
+							// Oczekiwanie  na zako≈Ñczenie pomiaru.
+	return ADCW;					// Funkcja zwraca warto≈õc rejestr√≥w ADCH i ADCL
 }
 
