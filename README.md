@@ -1,6 +1,8 @@
 
 ## Light Detector
 
+https://youtu.be/AEo-e3eQIuw
+
 Celem poniższego projektu było opracowanie prostego czujnika określającego położenie i odległość do źródła światła z wykorzystaniem modułu ADC mikrokontrolera Atmega32.
 
 Czujnik przekazuje dane na wyświetlacz LCD 2x16 w postaci komunikatów: LEFT, FRONT, RIGHT oraz znaczników odległości ">". Czujnik wykrywa źródło światła w promieniu do około 50 cm.
